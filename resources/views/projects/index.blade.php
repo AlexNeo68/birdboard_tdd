@@ -19,8 +19,6 @@
                             {{ Str::limit($project->description, 100) }}
                         </div>
                     </div>
-
-
                 </div>
             @empty
                 <div>Projects not yet</div>
