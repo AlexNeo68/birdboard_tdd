@@ -16,7 +16,7 @@ class ProjectTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->actingAs(factory('App\User')->create());
+        $this->signIn();
 
         $attributes = [
             'title' => $this->faker->sentence,
@@ -35,7 +35,7 @@ class ProjectTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->be($user = factory('App\User')->create());
+        $user = $this->signIn();
 
         $project = factory('App\Project')->create(['owner_id' => $user->id]);
 
@@ -47,7 +47,7 @@ class ProjectTest extends TestCase
     /** @test */
     public function a_project_field_title_required()
     {
-        $this->actingAs(factory('App\User')->create());
+        $this->signIn();
         $attributes = factory('App\Project')->raw(['title' => '']);
         $this->post('/projects', $attributes)->assertSessionHasErrors('title');
     }
@@ -55,7 +55,7 @@ class ProjectTest extends TestCase
     /** @test */
     public function a_project_field_description_required()
     {
-        $this->actingAs(factory('App\User')->create());
+        $this->signIn();
         $attributes = factory('App\Project')->raw(['description' => '']);
         $this->post('/projects', $attributes)->assertSessionHasErrors('description');
     }

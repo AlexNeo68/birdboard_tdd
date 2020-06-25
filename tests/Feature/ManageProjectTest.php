@@ -20,13 +20,16 @@ class ManageProjectTest extends TestCase
         $this->post('/projects', $project->toArray())->assertRedirect('/login');
         $this->get('/projects')->assertRedirect('/login');
         $this->get('/projects/' . $project->id)->assertRedirect('/login');
-        $this->be($user = factory('App\User')->create());
+
+        $this->signIn();
+
         $this->get('/projects/' . $project->id)->assertStatus(403);
     }
 
     /** @test */
     public function user_can_view_create_page()
     {
+        $this->signIn();
         $this->get('/projects/create')->assertStatus(200);
     }
 }

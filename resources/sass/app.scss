@@ -5,8 +5,9 @@
 @tailwind utilities;
 
 .button {
-    @apply .bg-blue-500 .rounded .py-2 .px-4 .text-white .shadow
+    @apply .bg-blue-500 .rounded .py-2 .px-4 .text-white .shadow;
 }
 .card {
-
+    @apply .p-5 .shadow .bg-white .rounded-lg;
+    height: 200px;
 }
