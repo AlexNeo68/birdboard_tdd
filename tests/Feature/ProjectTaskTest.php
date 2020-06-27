@@ -40,6 +40,44 @@ class ProjectTaskTest extends TestCase
     }
 
     /** @test */
+    public function project_task_can_be_update(){
+        $this->withoutExceptionHandling();
+
+        $user = $this->signIn();
+
+        $project = factory('App\Project')->create(['owner_id' => $user->id ]);
+
+        $task = $project->addTask('test task');
+
+        $attributes = [
+            'body' => 'changed task',
+            'completed' => true,
+        ];
+
+        $this->patch($task->path(), $attributes);
+        $this->assertDatabaseHas('tasks', $attributes);
+    }
+
+    /** @test */
+    public function project_task_can_update_only_owner(){
+
+        $this->signIn();
+
+        $project = factory('App\Project')->create();
+
+        $task = $project->addTask('test task');
+
+        $attributes = [
+            'body' => 'changed task',
+            'completed' => true,
+        ];
+
+        $this->patch($task->path(), $attributes)->assertStatus(403);
+
+        $this->assertDatabaseMissing('tasks', $attributes);
+    }
+
+    /** @test */
     public function a_project_required_body_field(){
         $this->signIn();
         $project = auth()->user()->projects()->create(factory('App\Project')->raw());

@@ -23,7 +23,9 @@ class ProjectTest extends TestCase
             'description' => $this->faker->paragraph,
         ];
 
-        $this->post('/projects', $attributes)->assertRedirect('/projects');
+        $response = $this->post('/projects', $attributes);
+        $project = Project::where($attributes)->first();
+        $response->assertRedirect('/projects/'.$project->id);
 
         $this->assertDatabaseHas('projects', $attributes);
 
