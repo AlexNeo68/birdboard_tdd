@@ -38,11 +38,12 @@
                     <h2 class="text-lg text-muted font-light mb-3">General Notes</h2>
                     <form action="{{url($project->path())}}" method="POST">
                         @csrf
+                        @method('PATCH')
                         <textarea
                             name="notes"
                             class="card w-full mb-4"
                             placeholder="Anything special that you want to make a note of?"
-                        ></textarea>
+                        >{{$project->notes}}</textarea>
                         <button type="submit" class="button">Save</button>
                     </form>
                 </div>
@@ -50,11 +51,7 @@
 
             <div class="w-1/4 px-3">
                 @include('projects.card')
-                {{ $project->description }}
             </div>
         </div>
-
-
     </main>
-
 @endsection
