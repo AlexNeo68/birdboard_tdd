@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Facades\Tests\Setup\ProjectFactory;
 use Tests\TestCase;
 
 class ProjectTaskTest extends TestCase
@@ -18,8 +19,11 @@ class ProjectTaskTest extends TestCase
 
     /** @test */
     public function only_owner_project_can_add_task_to_them(){
-        $this->signIn();
+
         $project = factory('App\Project')->create();
+
+        $this->signIn();
+
         $this->post($project->path().'/tasks', ['body' => 'Test Task'])->assertStatus(403);
         $this->assertDatabaseMissing('tasks', ['body' => 'Test Task']);
     }
@@ -28,24 +32,18 @@ class ProjectTaskTest extends TestCase
     /** @test */
     public function a_project_has_tasks()
     {
-        $this->withoutExceptionHandling();
 
-        $this->signIn();
+        $project = ProjectFactory::create();
 
-        $project = auth()->user()->projects()->create(factory('App\Project')->raw());
-
-        $this->post($project->path().'/tasks', ['body' => 'Test Task']);
+        $this->actingAs($project->owner)->post($project->path().'/tasks', ['body' => 'Test Task']);
 
         $this->get($project->path())->assertSee('Test Task');
     }
 
     /** @test */
     public function project_task_can_be_update(){
-        $this->withoutExceptionHandling();
 
-        $user = $this->signIn();
-
-        $project = factory('App\Project')->create(['owner_id' => $user->id ]);
+        $project = ProjectFactory::create();
 
         $task = $project->addTask('test task');
 
@@ -54,7 +52,7 @@ class ProjectTaskTest extends TestCase
             'completed' => true,
         ];
 
-        $this->patch($task->path(), $attributes);
+        $this->actingAs($project->owner)->patch($task->path(), $attributes);
         $this->assertDatabaseHas('tasks', $attributes);
     }
 
@@ -79,12 +77,11 @@ class ProjectTaskTest extends TestCase
 
     /** @test */
     public function a_project_required_body_field(){
-        $this->signIn();
-        $project = auth()->user()->projects()->create(factory('App\Project')->raw());
+        $project = ProjectFactory::create();
 
         $attributes = factory('App\Task')->raw(['body' => '']);
 
-        $this->post($project->path().'/tasks', $attributes)
+        $this->actingAs($project->owner)->post($project->path().'/tasks', $attributes)
             ->assertSessionHasErrors('body');
 
     }
