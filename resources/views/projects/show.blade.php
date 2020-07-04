@@ -2,13 +2,14 @@
 
 @section('content')
 
-    <div class="mb-6 pb-4">
+    <div class="mb-6 pb-4 flex justify-between">
         <div>
             <p class="text-muted font-light">
                 <a href="/projects" class="underline hover:no-underline">My Projects</a>
                 / {{$project->title}}
             </p>
         </div>
+        <div><a class="button" href="{{$project->path()}}/edit">Edit</a></div>
     </div>
 
     <main>
