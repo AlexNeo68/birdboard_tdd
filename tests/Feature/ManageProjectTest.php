@@ -71,6 +71,22 @@ class ManageProjectTest extends TestCase
     }
 
     /** @test */
+    public function a_user_can_update_only_notes_in_project()
+    {
+        $project = ProjectFactory::create();
+
+        $attributes = [
+            'notes' => 'changed',
+        ];
+
+        $this->actingAs($project->owner)
+            ->patch($project->path(), $attributes)
+            ->assertRedirect($project->path());
+
+        $this->assertDatabaseHas('projects', $attributes);
+    }
+
+    /** @test */
     public function an_authenticated_user_cannot_update_the_project_to_others()
     {
         $this->signIn();
