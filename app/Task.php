@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
+
     protected $guarded = [];
 
     protected $touches = ['project'];
+
+    protected $casts = ['completed' => 'boolean'];
 
     public function project(){
         return $this->belongsTo('App\Project');
@@ -16,5 +19,17 @@ class Task extends Model
 
     public function path(){
         return "/projects/{$this->project->id}/tasks/{$this->id}";
+    }
+
+    public function complete()
+    {
+        $this->update([ 'completed' => true ]);
+        $this->project->createActivity('task_completed');
+    }
+
+    public function incomplete()
+    {
+        $this->update([ 'completed' => false ]);
+        $this->project->createActivity('task_incompleted');
     }
 }
