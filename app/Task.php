@@ -21,15 +21,27 @@ class Task extends Model
         return "/projects/{$this->project->id}/tasks/{$this->id}";
     }
 
+    public function activities(){
+        return $this->morphMany(Activity::class, 'subject');
+    }
+
+    public function createActivity($description):void
+    {
+        $this->activities()->create([
+            'project_id' => $this->project_id,
+            'description' => $description
+        ]);
+    }
+
     public function complete()
     {
         $this->update([ 'completed' => true ]);
-        $this->project->createActivity('task_completed');
+        $this->createActivity('task_completed');
     }
 
     public function incomplete()
     {
         $this->update([ 'completed' => false ]);
-        $this->project->createActivity('task_incompleted');
+        $this->createActivity('task_incompleted');
     }
 }

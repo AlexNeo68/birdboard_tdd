@@ -9,11 +9,11 @@ class TaskObserver
 
     public function created(Task $task)
     {
-        $task->project->createActivity('task_created');
+        $task->createActivity('task_created');
     }
 
     public function deleted(Task $task)
     {
-        $task->project->createActivity('task_deleted');
+        $task->createActivity('task_deleted');
     }
 }
